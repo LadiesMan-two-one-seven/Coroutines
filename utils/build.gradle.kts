@@ -8,6 +8,7 @@ plugins {
 
 dependencies {
     // Apply the kotlinx bundle of dependencies from the version catalog (`gradle/libs.versions.toml`).
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.11.0")
     implementation(libs.bundles.kotlinxEcosystem)
     testImplementation(kotlin("test"))
 }
