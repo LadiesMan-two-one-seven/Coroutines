@@ -21,7 +21,7 @@ object Display {
     private val loadButton = JButton("Load Book").apply {
         addActionListener {
             isEnabled = false
-            infoArea.text = "Loading book from information...\n"
+            infoArea.text = "Loading book information...\n"
             loadBook {book ->
                 infoArea.append("Book: ${book.title}\nYear: ${book.year}\nGenre: ${book.genre}\n")
                 infoArea.append("Loading author information...\n")

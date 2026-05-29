@@ -40,7 +40,7 @@ object Display {
         when (step) {
             0 -> {
                 loadButton.isEnabled = false
-                infoArea.text = "Loading book from information...\n"
+                infoArea.text = "Loading book information...\n"
                 loadBook { loadData(1, it) }
             }
             1 -> {
