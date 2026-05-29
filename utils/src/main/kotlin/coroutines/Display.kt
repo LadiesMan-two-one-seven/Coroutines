@@ -4,16 +4,14 @@ import entities.Author
 import entities.Book
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.awt.BorderLayout
 import java.awt.Dimension
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
-import java.awt.event.WindowListener
 import javax.swing.JButton
 import javax.swing.JFrame
 import javax.swing.JLabel
@@ -24,7 +22,7 @@ import kotlin.concurrent.thread
 
 object Display {
 
-    private val scope = CoroutineScope(CoroutineName("My coroutine"))
+    private val scope = CoroutineScope(CoroutineName("My coroutine") + Dispatchers.Unconfined)
 
     private var infoArea = JTextArea().apply {
         isEditable = false
@@ -69,13 +67,25 @@ object Display {
         startTimer()
     }
 
+    private fun longOperation() {
+        repeat(300_000) {
+            mutableListOf<Int>().apply {
+                add(0, it)
+            }
+        }
+    }
+
     private suspend fun loadBook(): Book {
-        delay(3000)
-        return Book("1984", 1949, "Dystopia")
+        return withContext(Dispatchers.Default) {
+            longOperation()
+            Book("1984", 1949, "Dystopia")
+        }
     }
 
     private suspend fun loadAuthor(book: Book): Author {
-        delay(3000)
+        withContext(Dispatchers.Default) {
+            longOperation()
+        }
         return Author("George Orwell", "British writer and journalist")
     }
 
