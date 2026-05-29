@@ -2,12 +2,18 @@ package coroutines
 
 import entities.Author
 import entities.Book
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineName
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.awt.BorderLayout
 import java.awt.Dimension
+import java.awt.event.WindowAdapter
+import java.awt.event.WindowEvent
+import java.awt.event.WindowListener
 import javax.swing.JButton
 import javax.swing.JFrame
 import javax.swing.JLabel
@@ -18,19 +24,23 @@ import kotlin.concurrent.thread
 
 object Display {
 
+    private val scope = CoroutineScope(CoroutineName("My coroutine"))
+
     private var infoArea = JTextArea().apply {
         isEditable = false
     }
 
     private val loadButton = JButton("Load Book").apply {
         addActionListener {
-            GlobalScope.launch {
+            scope.launch {
                 isEnabled = false
                 infoArea.text = "Loading book from information...\n"
                 val book = loadBook()
+                println("Loaded $book")
                 infoArea.append("Book: ${book.title}\nYear: ${book.year}\nGenre: ${book.genre}\n")
                 infoArea.append("Loading author information...\n")
                 val author = loadAuthor(book)
+                println("Loaded: $author")
                 infoArea.append("Author: ${author.name}\nBiography: ${author.bio}\n")
                 isEnabled = true
             }
@@ -47,6 +57,11 @@ object Display {
         add(topPanel, BorderLayout.NORTH)
         add(JScrollPane(infoArea), BorderLayout.CENTER)
         size = Dimension(400, 300)
+        addWindowListener(object: WindowAdapter() {
+            override fun windowClosing(e: WindowEvent?) {
+                scope.cancel()
+            }
+        })
     }
 
     fun show() {
