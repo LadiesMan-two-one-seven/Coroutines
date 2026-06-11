@@ -1,10 +1,11 @@
-package exceptions
+package async
 
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.asCoroutineDispatcher
+import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.concurrent.Executors
@@ -17,7 +18,7 @@ private val scope = CoroutineScope(dispatcher + CoroutineName("My coroutine") + 
 
 fun main() {
     scope.launch {
-        launch {
+        async {
             method()
         }
     }
